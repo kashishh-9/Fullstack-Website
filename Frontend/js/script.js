@@ -156,22 +156,23 @@ form.addEventListener("submit", async (e) => {     /*Contact Form*/
     button.disabled = true;
     button.textContent = "Sending...";
     try {
-        const response = await fetch(
-            "http://localhost:5000/api/contact",
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    name,
-                    email,
-                    message
-                })
+        const response = await fetch("https://portfolio-backend-68uj.onrender.com/contact", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ name, email, message })
+        });
+        let data = {};
+        if (response.ok) {
+            try {
+                data = await response.json();
             }
-        );
-        const data = await response.json();
-        if (data.success) {
+            catch (err) {
+                data = {};
+            }
+        }
+        if (response.ok && data.success) {
             responseMessage.className = "success";
             responseMessage.textContent =
                 "Message sent successfully!";
