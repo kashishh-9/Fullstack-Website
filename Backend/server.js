@@ -3,9 +3,11 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const dotenv = require("dotenv");
 
-dotenv.config();
-console.log(process.env.PORT);
-console.log(process.env.MONGO_URI);
+const result = dotenv.config();
+
+console.log(result);
+console.log("PORT:", process.env.PORT);
+console.log("MONGO_URI:", process.env.MONGO_URI);
 
 const app = express();
 
@@ -19,15 +21,12 @@ app.use("/api/contact", contactRoutes);
 
 // MongoDB Connection
 mongoose
-  .connect(process.env.MONGO_URI, {
-    serverSelectionTimeoutMS: 10000,
-  })
+  .connect(process.env.MONGO_URI)
   .then(() => {
     console.log("✅ MongoDB Connected Successfully");
   })
   .catch((err) => {
-    console.error("MongoDB Error:");
-    console.error(err);
+    console.error("MongoDB Error:", err);
   });
 
 // Home Route

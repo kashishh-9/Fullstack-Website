@@ -14,6 +14,8 @@ router.post("/", async (req, res) => {
             message
         });
 
+        const mongoose = require("mongoose");
+        console.log("Route Ready State:", mongoose.connection.readyState);
         await newContact.save();
 
         res.status(201).json({

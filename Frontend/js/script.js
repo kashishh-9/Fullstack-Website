@@ -142,56 +142,65 @@ revealElements.forEach(item => {
 });
 window.addEventListener("scroll", revealOnScroll);
 revealOnScroll();
-form.addEventListener("submit", async (e) => {     /*Contact Form*/
+/* Contact Form */
+console.log("Form loaded:", form);
+form.addEventListener("submit", async (e) => {
     e.preventDefault();
+
+    console.log("✅ Submit button clicked");
+
     const name = document.getElementById("name").value.trim();
     const email = document.getElementById("email").value.trim();
     const message = document.getElementById("message").value.trim();
+
+    console.log({ name, email, message });
+
     if (!name || !email || !message) {
         responseMessage.className = "error";
         responseMessage.textContent = "Please fill all fields.";
         return;
     }
+
     const button = form.querySelector("button");
     button.disabled = true;
     button.textContent = "Sending...";
+
     try {
-        const response = await fetch("https://portfolio-backend-68uj.onrender.com/api/contact", {
+        const response = await fetch("http://localhost:5000/api/contact", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ name, email, message })
+            body: JSON.stringify({
+                name,
+                email,
+                message
+            })
         });
-        let data = {};
-        if (response.ok) {
-            try {
-                data = await response.json();
-            }
-            catch (err) {
-                data = {};
-            }
-        }
+
+        console.log("Status:", response.status);
+
+        const data = await response.json();
+
+        console.log("Response:", data);
+
         if (response.ok && data.success) {
             responseMessage.className = "success";
-            responseMessage.textContent =
-                "Message sent successfully!";
+            responseMessage.textContent = "Message sent successfully!";
             form.reset();
-        }
-        else {
+        } else {
             responseMessage.className = "error";
             responseMessage.textContent =
-                "Something went wrong.";
+                data.error || data.message || "Something went wrong.";
         }
-    }
-    catch (error) {
+
+    } catch (error) {
+        console.error("Fetch Error:", error);
+
         responseMessage.className = "error";
-        responseMessage.textContent =
-            "Server is not responding.";
+        responseMessage.textContent = "Server is not responding.";
     }
+
     button.disabled = false;
     button.textContent = "Send Message";
 });
-
-
-
