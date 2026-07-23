@@ -2,13 +2,18 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const dotenv = require("dotenv");
+const dns = require("dns");
 
-const result = dotenv.config();
+// Load environment variables
+dotenv.config();
 
-console.log(result);
-console.log("PORT:", process.env.PORT);
-console.log("MONGO_URI:", process.env.MONGO_URI);
+// Force Node.js to use public DNS servers
+dns.setServers(["1.1.1.1", "8.8.8.8"]);
 
+// Verify DNS servers being used
+console.log("DNS Servers:", dns.getServers());
+
+// Create Express app
 const app = express();
 
 // Middleware
@@ -26,7 +31,7 @@ mongoose
     console.log("✅ MongoDB Connected Successfully");
   })
   .catch((err) => {
-    console.error("MongoDB Error:", err);
+    console.error("❌ MongoDB Error:", err);
   });
 
 // Home Route
